@@ -1,36 +1,50 @@
 <?php
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Response;
+class SupportMacroableTraitTest extends \PHPUnit_Framework_TestCase
+{
 
-class SupportMacroableTraitTest extends \PHPUnit_Framework_TestCase {
+    private $macroTrait;
 
-	private $macroTrait;
+    public function setUp()
+    {
+        $this->macroTrait = $this->createObjectForTrait();
+    }
 
-	public function setUp()
-	{
-		$this->macroTrait = $this->createObjectForTrait();
-	}
+    private function createObjectForTrait()
+    {
+        $traitName = 'Illuminate\Support\Traits\MacroableTrait';
 
-	private function createObjectForTrait()
-	{
-		$traitName = 'Illuminate\Support\Traits\MacroableTrait';
+        return $this->getObjectForTrait($traitName);
+    }
 
-		return $this->getObjectForTrait($traitName);
-	}
 
-	public function testRegisterMacro()
-	{
-		$macroTrait = $this->macroTrait;
-		$macroTrait::macro(__CLASS__, function() { return 'Taylor'; });
-		$this->assertEquals('Taylor', $macroTrait::{__CLASS__}());
-	}
+    public function testRegisterAndCallMacroWithStatic()
+    {
+        $macroTrait = $this->macroTrait;
+        $macroTrait::macro(__CLASS__, function () {
+            return 'Taylor';
+        });
+        $this->assertEquals($macroTrait::{__CLASS__}(), 'Taylor');
+    }
 
-	public function testResgisterMacroAndCallWithoutStatic()
-	{
-		$macroTrait = $this->macroTrait;
-		$macroTrait::macro(__CLASS__, function() { return 'Taylor'; });
-		$this->assertEquals('Taylor', $macroTrait->{__CLASS__}());
-	}
+
+    public function testRegisterAndCallMacroWithoutStatic()
+    {
+        $macroTrait = $this->macroTrait;
+        $macroTrait->macro(__CLASS__, function () {
+            return 'Taylor';
+        });
+        $this->assertEquals($macroTrait->{__CLASS__}(), 'Taylor');
+    }
+
+
+    /**
+     * @expectedException \BadMethodCallException
+     */
+    public function testThrowsExceptionWhenMacroIsMissing()
+    {
+        $macroTrait = $this->macroTrait;
+        $macroTrait->taylorOtwell();
+    }
 
 }
