@@ -3,7 +3,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 
-class SupportMacroTraitTest extends \PHPUnit_Framework_TestCase {
+class SupportMacroableTraitTest extends \PHPUnit_Framework_TestCase {
 
 	private $macroTrait;
 
